@@ -197,7 +197,7 @@ public without sharing class NavatarNotesModalCtrl {
                 
                 boolean isObjAccess = Schema.getGlobalDescribe().get(objectName).getDescribe().isAccessible();
                 if(isObjAccess){
-                    string qry = 'Select Id, navpeII_Dev13__Related_Associations__c From ' +objectName+ ' WHERE Id =:recId  WITH USER_MODE';
+                    string qry = 'Select Id, navpeII_Dev2__Related_Associations__c From ' +objectName+ ' WHERE Id =:recId  WITH USER_MODE';
                     List<SObject> recList = Database.query(String.escapeSingleQuotes(qry));
 
                     if(recList != null && !recList.isEmpty()){
@@ -273,7 +273,7 @@ public without sharing class NavatarNotesModalCtrl {
                             commentStr = 'Related Contacts: ' +String.join(contactsNameSet,',')+ '\n Related Associations: ' +String.join(associationsNameSet,',')+'\n--------------------------------------------------------------------------------\n'+commentStr;
                         }
                         sObj.put('Description',commentStr);
-                        sObj.put('navpeII_Dev13__Related_Associations__c',string.join(associationsList, ','));
+                        sObj.put('navpeII_Dev2__Related_Associations__c',string.join(associationsList, ','));
 
                         Boolean isAccess = false;
                         if(recId != '' && recId != null){
@@ -346,11 +346,11 @@ public without sharing class NavatarNotesModalCtrl {
                             List<Task> followuptaskToUpdate = new List<Task>();
                             for(String taskId : followupIds){
                                 if(checkUpdateableFields(Schema.getGlobalDescribe().get('Task'),
-                                                         new List<String>{'Description','navpeII_Dev13__Related_Associations__c'})==new List<String>{'Description','navpeII_Dev13__Related_Associations__c'}){//,'id' removed for critical bug by Anmol
+                                                         new List<String>{'Description','navpeII_Dev2__Related_Associations__c'})==new List<String>{'Description','navpeII_Dev2__Related_Associations__c'}){//,'id' removed for critical bug by Anmol
                                 task tsk = new Task();
                                 tsk.id = taskId;
                                 tsk.put('Description',''); // Bug 00048343 fixed by Sudhanshu
-                                tsk.put('navpeII_Dev13__Related_Associations__c',string.join(associationsList, ','));
+                                tsk.put('navpeII_Dev2__Related_Associations__c',string.join(associationsList, ','));
                                 followuptaskToUpdate.add(tsk);
                                 }
                             }
@@ -515,7 +515,7 @@ public without sharing class NavatarNotesModalCtrl {
             
             sObj.put('Description',commentStr);
             sObj.put('subject',subject);
-            sObj.put('navpeII_Dev13__Related_Associations__c',string.join(associationsList, ','));
+            sObj.put('navpeII_Dev2__Related_Associations__c',string.join(associationsList, ','));
 
             // get all data from other fields
             for(FieldWrapper fw : otherFielddDataList){
@@ -587,19 +587,19 @@ public without sharing class NavatarNotesModalCtrl {
 
                 if(urRes.isSuccess()){
                     // Added by Sudhanshu
-                    if(Schema.sObjectType.navpeII_Dev13__Note__c.isAccessible())
+                    if(Schema.sObjectType.navpeII_Dev2__Note__c.isAccessible())
                     {
-                        List<navpeII_Dev13__Note__c> noteList = new List<navpeII_Dev13__Note__c>();
+                        List<navpeII_Dev2__Note__c> noteList = new List<navpeII_Dev2__Note__c>();
                         if(isRichTxtEnable)
                         {
                             System.debug('richTxtDescription ==>'+richTxtDescription);
                             System.debug('richTxtDescriptionID ==>'+urRes.getId());
-                            navpeII_Dev13__Note__c richtxt = new navpeII_Dev13__Note__c();
-                            if(Schema.sObjectType.navpeII_Dev13__Note__c.fields.navpeII_Dev13__Activity_ID__c.isUpdateable()){
-                                richtxt.navpeII_Dev13__Activity_ID__c = urRes.getId();
+                            navpeII_Dev2__Note__c richtxt = new navpeII_Dev2__Note__c();
+                            if(Schema.sObjectType.navpeII_Dev2__Note__c.fields.navpeII_Dev2__Activity_ID__c.isUpdateable()){
+                                richtxt.navpeII_Dev2__Activity_ID__c = urRes.getId();
                             }
-                            if(Schema.sObjectType.navpeII_Dev13__Note__c.fields.navpeII_Dev13__Description__c.isUpdateable()){
-                                richtxt.navpeII_Dev13__Description__c = richTxtDescription;
+                            if(Schema.sObjectType.navpeII_Dev2__Note__c.fields.navpeII_Dev2__Description__c.isUpdateable()){
+                                richtxt.navpeII_Dev2__Description__c = richTxtDescription;
                             }
                             noteList.add(richtxt);
 
@@ -607,8 +607,8 @@ public without sharing class NavatarNotesModalCtrl {
                             {
                                 try{
 
-                                    SObjectField field = navpeII_Dev13__Note__c.navpeII_Dev13__Activity_ID__c;
-                                    if(Schema.sObjectType.navpeII_Dev13__Note__c.isUpdateable()){
+                                    SObjectField field = navpeII_Dev2__Note__c.navpeII_Dev2__Activity_ID__c;
+                                    if(Schema.sObjectType.navpeII_Dev2__Note__c.isUpdateable()){
                                         List<Database.UpsertResult> urRes1 = Database.Upsert(noteList, field,false);
                                     }
                                     // upsert noteList;
@@ -733,7 +733,7 @@ public without sharing class NavatarNotesModalCtrl {
                         List<Task> followupTaskListIns = new List<Task>();
                         for(followupTaskWrapper ftw : followupTaskList){
                             Task t = new Task();
-                            t.put('navpeII_Dev13__Related_Associations__c',string.join(associationsList, ','));
+                            t.put('navpeII_Dev2__Related_Associations__c',string.join(associationsList, ','));
                             //31741 to add comment in followup task
                             // t.put('Description',commentStr);
                             // Bug 00047426 fixed by Sudhanshu on 07-10-2024
@@ -889,12 +889,12 @@ public without sharing class NavatarNotesModalCtrl {
             NotesWrapper notesList = new NotesWrapper();
             notesList.isRichText = refField.toLowerCase();
             if(refField.toLowerCase() == 'true' && !String.isBlank(recordId) ){
-                List<navpeII_Dev13__Note__c> actDesp = [SELECT navpeII_Dev13__Activity_ID__c, navpeII_Dev13__Description__c  FROM navpeII_Dev13__Note__c WHERE navpeII_Dev13__Activity_ID__c = : recordId];
+                List<navpeII_Dev2__Note__c> actDesp = [SELECT navpeII_Dev2__Activity_ID__c, navpeII_Dev2__Description__c  FROM navpeII_Dev2__Note__c WHERE navpeII_Dev2__Activity_ID__c = : recordId];
                 if(actDesp.size() > 0){
-                    notesList.id = actDesp[0].navpeII_Dev13__Activity_ID__c ;
+                    notesList.id = actDesp[0].navpeII_Dev2__Activity_ID__c ;
                     
-                    notesList.richDescription = String.isBlank(actDesp[0].navpeII_Dev13__Description__c) ? '' : actDesp[0].navpeII_Dev13__Description__c ;
-                    // actIdVsDespMap.put(actDesp.navpeII_Dev13__Activity_ID__c,actDesp.navpeII_Dev13__Description__c);
+                    notesList.richDescription = String.isBlank(actDesp[0].navpeII_Dev2__Description__c) ? '' : actDesp[0].navpeII_Dev2__Description__c ;
+                    // actIdVsDespMap.put(actDesp.navpeII_Dev2__Activity_ID__c,actDesp.navpeII_Dev2__Description__c);
                 }
                 else{
                     notesList.richDescription   =   '';
@@ -1049,7 +1049,7 @@ public without sharing class NavatarNotesModalCtrl {
             if(recordId != null && recordId != ''){
                 Id recrId = (Id)recordId;
                 String objectName = recrId.getSObjectType().getDescribe().getName();
-                String qury = 'SELECT Id, Owner.Name, Description, Subject, navpeII_Dev13__Related_Associations__c, ' +fieldNames.removeEnd(',')+ ' FROM ' +objectName+ ' WHERE Id =:recordId WITH USER_MODE';
+                String qury = 'SELECT Id, Owner.Name, Description, Subject, navpeII_Dev2__Related_Associations__c, ' +fieldNames.removeEnd(',')+ ' FROM ' +objectName+ ' WHERE Id =:recordId WITH USER_MODE';
                 List<sObject> objList = Database.query(string.escapesinglequotes(qury));
                 
                 for(FieldWrapper fWrap : fieldWrapList){
@@ -1118,7 +1118,7 @@ public without sharing class NavatarNotesModalCtrl {
                 }
                 
                 
-                //List<Event> evList = [SELECT Id, Description, Subject, navpeII_Dev13__Related_Associations__c FROM Event WHERE Id =:recordId];
+                //List<Event> evList = [SELECT Id, Description, Subject, navpeII_Dev2__Related_Associations__c FROM Event WHERE Id =:recordId];
                 Map<String,String> objnamevsId = new Map<String,String>();
                 
                 ew.subject = (String)objList[0].get('Subject');
@@ -1146,10 +1146,10 @@ description = (String)objList[0].get('Description');
 
                 // creating map of each objects with there ids.
                 Map<String, List<String>> ObjNameVSWhatid = new Map<String, List<String>>();
-                if(objList[0].get('navpeII_Dev13__Related_Associations__c') != null){
+                if(objList[0].get('navpeII_Dev2__Related_Associations__c') != null){
         
                     Set<Id> uniqueRAIdsSet=new Set<Id>();
-                    for(String raId : String.valueOf(objList[0].get('navpeII_Dev13__Related_Associations__c')).split(',')){
+                    for(String raId : String.valueOf(objList[0].get('navpeII_Dev2__Related_Associations__c')).split(',')){
                         uniqueRAIdsSet.add(raId);
                     }
                     Set<Id> accessibleIdsSet=new Set<Id>();
@@ -1761,13 +1761,13 @@ description = (String)objList[0].get('Description');
             String Notes_Popup_FollowUp_Task_Fields='';
             String AD_Switcher='';
             try{
-                strQuery = 'SELECT Id, navpeII_Dev13__AD_Switcher__c, navpeII_Dev13__RAS__c, navpeII_Dev13__Notes_Popup_Event_Fields__c, navpeII_Dev13__Notes_Popup_Task_Fields__c, navpeII_Dev13__Notes_Popup_FollowUp_Task_Fields__c FROM navpeII_Dev13__Navatar_Setup__c Where navpeII_Dev13__Admin_Setting__c = true AND navpeII_Dev13__RAS__c != Null';
+                strQuery = 'SELECT Id, navpeII_Dev2__AD_Switcher__c, navpeII_Dev2__RAS__c, navpeII_Dev2__Notes_Popup_Event_Fields__c, navpeII_Dev2__Notes_Popup_Task_Fields__c, navpeII_Dev2__Notes_Popup_FollowUp_Task_Fields__c FROM navpeII_Dev2__Navatar_Setup__c Where navpeII_Dev2__Admin_Setting__c = true AND navpeII_Dev2__RAS__c != Null';
                 lst = Database.query(string.escapesinglequotes(strQuery));
-                RAS = RAS + String.valueOf(lst[0].get('navpeII_Dev13__RAS__c'));
-                Notes_Popup_Task_Fields=(String)lst[0].get('navpeII_Dev13__Notes_Popup_Task_Fields__c');
-                Notes_Popup_Event_Fields=(String)lst[0].get('navpeII_Dev13__Notes_Popup_Event_Fields__c');
-                Notes_Popup_FollowUp_Task_Fields=(String)lst[0].get('navpeII_Dev13__Notes_Popup_FollowUp_Task_Fields__c');
-                AD_Switcher=String.valueOf(lst[0].get('navpeII_Dev13__AD_Switcher__c'));
+                RAS = RAS + String.valueOf(lst[0].get('navpeII_Dev2__RAS__c'));
+                Notes_Popup_Task_Fields=(String)lst[0].get('navpeII_Dev2__Notes_Popup_Task_Fields__c');
+                Notes_Popup_Event_Fields=(String)lst[0].get('navpeII_Dev2__Notes_Popup_Event_Fields__c');
+                Notes_Popup_FollowUp_Task_Fields=(String)lst[0].get('navpeII_Dev2__Notes_Popup_FollowUp_Task_Fields__c');
+                AD_Switcher=String.valueOf(lst[0].get('navpeII_Dev2__AD_Switcher__c'));
             }
             catch(exception ex){
                 strQuery = 'SELECT Id, AD_Switcher__c, RAS__c, Notes_Popup_Event_Fields__c, Notes_Popup_Task_Fields__c, Notes_Popup_FollowUp_Task_Fields__c FROM Navatar_Setup__c Where Admin_Setting__c = true AND RAS__c != Null';
@@ -1811,7 +1811,7 @@ description = (String)objList[0].get('Description');
             for(LookupWrapper lookupWrap : multiWrpCls){
                 for(JsonResponse tab : layoutInfo){
                     System.debug('tab.label=='+tab.label);
-                    if(lookupWrap.objectName == 'navpeII_Dev13__Theme__c'){
+                    if(lookupWrap.objectName == 'navpeII_Dev2__Theme__c'){
                         for(Icons icon : tab.icons){
                             if(icon.height == 0 && icon.theme == 'theme4' && tab.label.equalsIgnoreCase('Themes')){
                                 //objApiNameVsIconNameMap.put(objApiName, icon.url.split('/')[6] + ':' + (icon.url.split('/')[7]).split('\\.')[0]);
@@ -2210,8 +2210,8 @@ description = (String)objList[0].get('Description');
     @AuraEnabled
     public static void saveRtaToggleStatus(Boolean rtaToggleStatus){
         try {
-            User u = [SELECT Id, navpeII_Dev13__Enable_RTA_Toolbar__c FROM User WHERE Id =:UserInfo.getUserId()];
-            u.navpeII_Dev13__Enable_RTA_Toolbar__c = rtaToggleStatus;
+            User u = [SELECT Id, navpeII_Dev2__Enable_RTA_Toolbar__c FROM User WHERE Id =:UserInfo.getUserId()];
+            u.navpeII_Dev2__Enable_RTA_Toolbar__c = rtaToggleStatus;
             Database.update(u, true);
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
@@ -2226,7 +2226,7 @@ description = (String)objList[0].get('Description');
     @AuraEnabled
     public static boolean checkRtaToggleStatus(){
         try {
-            return [SELECT navpeII_Dev13__Enable_RTA_Toolbar__c FROM User WHERE Id =:UserInfo.getUserId()].navpeII_Dev13__Enable_RTA_Toolbar__c;
+            return [SELECT navpeII_Dev2__Enable_RTA_Toolbar__c FROM User WHERE Id =:UserInfo.getUserId()].navpeII_Dev2__Enable_RTA_Toolbar__c;
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
