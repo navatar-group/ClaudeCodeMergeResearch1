@@ -96,9 +96,10 @@ public with sharing class NavatarAcuityCtrl {
                                   .getSObjectType();
             respWrapper.dealTeamPluralLabel = sObjType1.getDescribe().getLabelPlural();
             String fndRsngCntObjectName =getNamespacePrefix() + '__'+'Fundraising_Contact__c';
-            // Bug Fix by Dev 1
+            SObjectType sObjType2 = ((SObject) Type.forName(fndRsngCntObjectName).newInstance())
+                                  .getSObjectType();
             respWrapper.fndrgCntPluralLabel = sObjType2.getDescribe().getLabelPlural();
-			SObjectType sObjType1 = 'Merging';
+            List<String> conIdList = new List<String>();
             if(String.escapeSingleQuotes(objApiName).equalsIgnoreCase('Account')){
                 respWrapper.conMap = fetchInitInfoToProcess('Acuity_Connection_Field1', 'Acuity_Connection_Field2', 'Contact', ' WHERE AccountId = :recordId', recordId, null);
                 conIdList.addAll(respWrapper.conMap.keySet());
@@ -161,7 +162,7 @@ public with sharing class NavatarAcuityCtrl {
             respWrapper.completeActIdList = completeActIdList;
             //Modified by Omkar Yamgar W.R.To Bug# 00039803 start 
             respWrapper.acclabel = SObjectType.Account.getLabelPlural();
-            respWrapper.conlabel = SObjectType.Deal.getLabelPlural();
+            respWrapper.conlabel = SObjectType.Account.getLabelPlural();
             respWrapper.dellabel = SObjectType.navpeII_Dev2__Pipeline__c.getLabelPlural();
             respWrapper.fundlabel = SObjectType.navpeII_Dev2__Fund__c.getLabelPlural();
             respWrapper.themelabel = SObjectType.navpeII_Dev2__Theme__c.getLabelPlural();
