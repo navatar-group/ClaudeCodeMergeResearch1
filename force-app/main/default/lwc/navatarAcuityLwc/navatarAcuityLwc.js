@@ -243,7 +243,7 @@ frcRolePicklist({ data, error }) {
 
 handleFundraisingContactCreate(){
     if(this.fdrConPermissions['isCreateable']){
-        this.publishEvent((this.objectApiName === 'Contact' ? 'Contact' : 'navpeII_Dev2__Fundraising__c') + '.New_Fundraising_Contact');
+        this.publishEvent((this.objectApiName === 'Contact' ? 'Contact' : 'navpeII_Dev13__Fundraising__c') + '.New_Fundraising_Contact');
     } else {
         //Msg updated by LK on 2024-05-13 to fix 00045572
         //Removed "Error!" by LK on 2024-07-04 to fix 00046365 - Code Reverted
@@ -880,7 +880,7 @@ fetchActInfo(event){
         this[NavigationMixin.GenerateUrl]({
             type: "standard__navItemPage",
             attributes: {
-                apiName: "navpeII_Dev2__Interactions",
+                apiName: "navpeII_Dev13__Interactions",
             },
             state: {
                 c__header: header,
@@ -897,7 +897,7 @@ fetchActInfo(event){
         this[NavigationMixin.GenerateUrl]({
             type: "standard__navItemPage",
             attributes: {
-                apiName: "navpeII_Dev2__Interactions",
+                apiName: "navpeII_Dev13__Interactions",
             },
             state: {
                 c__email: event.detail.row.email,
@@ -920,7 +920,7 @@ fetchActInfo(event){
         header = (event.detail.action.name === 'timesRefMob' ? 'All Interactions With ' : 'Meetings & Calls With ') + event.detail.row.name;
         emptyModalKeyword = event.detail.action.name === 'timesRefMob' ? 'Interactions' : 'Meetings';
         let compDef = {
-            componentDef: "navpeII_Dev2:navatarAcuityRedirectionLwc",
+            componentDef: "navpeII_Dev13:navatarAcuityRedirectionLwc",
             attributes: {
                 header: header,
                 actIdList: event.detail.row.actIdsList != undefined ? event.detail.row.actIdsList : [],
@@ -933,7 +933,7 @@ fetchActInfo(event){
     else if(event.detail.action.name === 'dealRefMob'){
         if(this.dealPermissions['isAccessible']){
             let compDef = {
-                componentDef: "navpeII_Dev2:navatarAcuityRedirectionLwc",
+                componentDef: "navpeII_Dev13:navatarAcuityRedirectionLwc",
                 attributes: {
                     header: `Deals With ${event.detail.row.name}`,
                     namespacePrefix: this.namespacePrefix,
@@ -951,7 +951,7 @@ fetchActInfo(event){
     else if(event.detail.action.name === 'dealRef'){
         if(this.dealPermissions['isAccessible']){
             // let compDef = {
-            //     componentDef: "navpeII_Dev2:navatarAcuityRedirectionLwc",
+            //     componentDef: "navpeII_Dev13:navatarAcuityRedirectionLwc",
             //     attributes: {
             //         header: `Deals With ${event.detail.row.name}`,
             //         namespacePrefix: this.namespacePrefix,
@@ -964,7 +964,7 @@ fetchActInfo(event){
             this[NavigationMixin.GenerateUrl]({
                 type: "standard__navItemPage",
                 attributes: {
-                    apiName: "navpeII_Dev2__Interactions",
+                    apiName: "navpeII_Dev13__Interactions",
                 },
                 state: {
                     c__header: `Deals With ${event.detail.row.name}`,
@@ -981,7 +981,7 @@ fetchActInfo(event){
     } //Modified by Anshika Ahuja W.R.TO Redirection
     else if(event.detail.action.name === 'emailRef'){
         // let compDef = {
-        //     componentDef: "navpeII_Dev2:navatarAcuityRedirectionLwc",
+        //     componentDef: "navpeII_Dev13:navatarAcuityRedirectionLwc",
         //     attributes: {
         //         header: `Emails With ${event.detail.row.name}`,
         //         namespacePrefix: this.namespacePrefix,
@@ -997,7 +997,7 @@ fetchActInfo(event){
         this[NavigationMixin.GenerateUrl]({
             type: "standard__navItemPage",
             attributes: {
-                apiName: "navpeII_Dev2__Interactions",
+                apiName: "navpeII_Dev13__Interactions",
             },
             state: {
                 c__header: `Emails With ${event.detail.row.name}`,
@@ -1083,7 +1083,7 @@ handleViewAllClick(){
     //this.navigateToLwcComp(compDef);
     //Phase 3 Critical Bug - 00045332,00045334
     let compDef = {
-        componentDef: "navpeII_Dev2:navatarAcuityRedirectionLwc",
+        componentDef: "navpeII_Dev13:navatarAcuityRedirectionLwc",
         attributes: {
             //header: 'All Interactions With ' + this.currRecName,
             //Replaced above line with below 2 lines by LK on 2024-10-11 to fix 00047757
@@ -2013,7 +2013,7 @@ getDealTeamRecords() {
                     this.conCols.splice(4, 0, { label: result.conSecDynFieldHeader3, fieldName: 'roleRef3', type: 'picklist', hideDefaultActions: true, editable: this.dealTeamPermissions['isEditable'], typeAttributes: {
                         context: {fieldName: 'Id'},
                         editable: this.dealTeamPermissions['isEditable'],
-                        fieldApiName: 'navpeII_Dev2__Team_Member_Role__c',
+                        fieldApiName: 'navpeII_Dev13__Team_Member_Role__c',
                         options: {fieldName: 'picklistOptions'} ,
                         placeholder: 'Choose Role',
                         value:   {fieldName: 'roleRef3'}}})
@@ -2100,7 +2100,7 @@ removeDealTeam() {
                 type: 'standard__recordPage',
                 attributes: {
                     recordId: this.recordId,
-                    objectApiName: 'navpeII_Dev2__Pipeline__c',
+                    objectApiName: 'navpeII_Dev13__Pipeline__c',
                     actionName: 'view'
                 }
             });
@@ -2188,9 +2188,9 @@ hidecheckintr(){
 handleNewDealTeamMember(){
     if(this.dealTeamPermissions['isCreateable']){
         if(this.dealTeamTabValue === 'Internal'){
-            this.publishEvent('navpeII_Dev2__Pipeline__c.New_Team_Member');
+            this.publishEvent('navpeII_Dev13__Pipeline__c.New_Team_Member');
         } else {
-            this.publishEvent('navpeII_Dev2__Pipeline__c.New_Deal_Contact');
+            this.publishEvent('navpeII_Dev13__Pipeline__c.New_Deal_Contact');
         }
     } else {
         //Msg updated by LK on 2024-05-13 to fix 00045572
@@ -2405,7 +2405,7 @@ handleCellChange(event) {
         let copyData = JSON.parse(JSON.stringify(this.conCols));
         copyData.forEach(item => {
             if (updateItem.hasOwnProperty(item.fieldName)) {
-                updateItem[item.fieldApiName] = (item.fieldApiName == 'navpeII_Dev2__Investment_Likely_Amount_USD_mn__c') ? updateItem[item.fieldName].substring(updateItem[item.fieldName].indexOf(updateItem[item.fieldName].match(/\d+/)[0])) : updateItem[item.fieldName];//Bug45961 Fix By Harshwardhan
+                updateItem[item.fieldApiName] = (item.fieldApiName == 'navpeII_Dev13__Investment_Likely_Amount_USD_mn__c') ? updateItem[item.fieldName].substring(updateItem[item.fieldName].indexOf(updateItem[item.fieldName].match(/\d+/)[0])) : updateItem[item.fieldName];//Bug45961 Fix By Harshwardhan
                 updatedValue = item.fieldName;
                 delete updateItem[item.fieldName];
             }

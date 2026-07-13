@@ -612,12 +612,12 @@ export default class navatarNotesModalLwc extends NavigationMixin(LightningEleme
             this.allTaggedRecords = this.allTaggedRecords.concat(JSON.parse(data));
             this.crnttaggedrecord = JSON.parse(data);
             // Bug 00047561,00048364 fixed by Sudhanshu
-            if(this.crnttaggedrecord[0].objectName == 'navpeII_Dev2__Fundraising__c')
+            if(this.crnttaggedrecord[0].objectName == 'navpeII_Dev13__Fundraising__c')
             {
                 this.addNewFundRaising(this.crnttaggedrecord[0]);
             }
             // Bug 00047558,00048364 fixed by Sudhanshu
-            if(this.crnttaggedrecord[0].objectName == 'navpeII_Dev2__Pipeline__c')
+            if(this.crnttaggedrecord[0].objectName == 'navpeII_Dev13__Pipeline__c')
             {
                 this.addNewDeals(this.crnttaggedrecord[0]);
             }
@@ -1132,7 +1132,7 @@ export default class navatarNotesModalLwc extends NavigationMixin(LightningEleme
                             '',
                             {
                                 // Bug 00046852 fixed by Sudhanshu on 30-07-2024
-                                url: '/lightning/n/navpeII_Dev2__View_Interaction?c__params='+allIteractionsParams,
+                                url: '/lightning/n/navpeII_Dev13__View_Interaction?c__params='+allIteractionsParams,
                                 label: this.subject,
                             }
                         ]});
@@ -1147,7 +1147,7 @@ export default class navatarNotesModalLwc extends NavigationMixin(LightningEleme
                                 '',
                                 {
                                     // Bug 00046852 fixed by Sudhanshu on 30-07-2024
-                                    url: '/lightning/n/navpeII_Dev2__View_Interaction?c__params='+allIteractionsParams,
+                                    url: '/lightning/n/navpeII_Dev13__View_Interaction?c__params='+allIteractionsParams,
                                     label: followupDetailsMap[key],
                                 }
                                 ]}));
@@ -1614,10 +1614,10 @@ export default class navatarNotesModalLwc extends NavigationMixin(LightningEleme
         }
         if(!idAdded){
             this.allTaggedRecords.push({Name:selectedRecord.Name, Id:selectedRecord.Id, iconName:selectedRecord.iconName, objectName : selectedRecord.objectName});
-            if(selectedRecord.objectName == 'navpeII_Dev2__Pipeline__c') {
+            if(selectedRecord.objectName == 'navpeII_Dev13__Pipeline__c') {
                 this.addNewDeals(selectedRecord);
             }
-            if(selectedRecord.objectName == 'navpeII_Dev2__Fundraising__c') {
+            if(selectedRecord.objectName == 'navpeII_Dev13__Fundraising__c') {
                 this.addNewFundRaising(selectedRecord);
             }
         }
@@ -2676,7 +2676,7 @@ export default class navatarNotesModalLwc extends NavigationMixin(LightningEleme
                                 '',
                                 {
                                     // Bug 00046852 fixed by Sudhanshu on 30-07-2024
-                                    url: '/lightning/n/navpeII_Dev2__View_Interaction?c__params='+allIteractionsParams,
+                                    url: '/lightning/n/navpeII_Dev13__View_Interaction?c__params='+allIteractionsParams,
                                     label: this.subject,
                                 }
                             ]});
@@ -2688,7 +2688,7 @@ export default class navatarNotesModalLwc extends NavigationMixin(LightningEleme
                 this.fetchRecordData();
                 this.selectedSuggestedData.forEach(suggedtedRec => {
                     // Bug 00047558 fixed by Sudhanshu
-                    if (suggedtedRec.objectApiName == 'navpeII_Dev2__Pipeline__c') {
+                    if (suggedtedRec.objectApiName == 'navpeII_Dev13__Pipeline__c') {
                         this.addNewDeals(suggedtedRec);
                     }
                     if (suggedtedRec.objectName == 'Fundraising') {
@@ -2926,7 +2926,7 @@ export default class navatarNotesModalLwc extends NavigationMixin(LightningEleme
     @track message;
     @track recordId;
     subscription = {};
-    @api channelName = '/event/navpeII_Dev2__Navatar_ImportNotes_Event__e';
+    @api channelName = '/event/navpeII_Dev13__Navatar_ImportNotes_Event__e';
 
     IsFileImported = false;         // Bug 	00045530 fixed by Sudhanshu on 27-05-2024
     importCount = 0;
@@ -2938,12 +2938,12 @@ export default class navatarNotesModalLwc extends NavigationMixin(LightningEleme
         const messageCallback = function (response) {
             var obj = JSON.parse(JSON.stringify(response));
             console.log(obj.data.payload);
-            console.log(obj.data.payload.navpeII_Dev2__ImportNotes_Message__c);
+            console.log(obj.data.payload.navpeII_Dev13__ImportNotes_Message__c);
             console.log(self.channelName);
             let objData = obj.data.payload;
-            self.message = objData.navpeII_Dev2__ImportNotes_Message__c;
-            self.navpeII_Dev2__ImportNotes_ID__c = objData.navpeII_Dev2__ImportNotes_ID__c;
-            if(objData.navpeII_Dev2__ImportNotes_ID__c == self.importId){
+            self.message = objData.navpeII_Dev13__ImportNotes_Message__c;
+            self.navpeII_Dev13__ImportNotes_ID__c = objData.navpeII_Dev13__ImportNotes_ID__c;
+            if(objData.navpeII_Dev13__ImportNotes_ID__c == self.importId){
 
                 if(self.message == 'Success')
                 {
@@ -2993,7 +2993,7 @@ export default class navatarNotesModalLwc extends NavigationMixin(LightningEleme
     interactionsPartialInfoArray;
     
     meetingCallEmailViewpopup(){
-        handleInteractionsInfo({namespacePrefix : 'navpeII_Dev2__', actIdList : this.recordId})
+        handleInteractionsInfo({namespacePrefix : 'navpeII_Dev13__', actIdList : this.recordId})
         .then((result) => {
             if(result && result.length > 0){
                 //For handling Desktop Scenario
