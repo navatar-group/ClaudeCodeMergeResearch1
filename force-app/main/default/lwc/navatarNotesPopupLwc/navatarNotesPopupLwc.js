@@ -73,7 +73,7 @@ export default class NavatarNotesPopupLwc extends NavigationMixin(LightningEleme
     /* Method for call Notes modal and pass the parameters */
     handleViewAllClick(){
         let compDef = {
-            componentDef: "navpeII_Dev2:navatarNotesModalLwc",
+            componentDef: "navpeII_Dev14:navatarNotesModalLwc",
             attributes: {
                 objectName: 'Task',
                 redirectId: this.redirectId,

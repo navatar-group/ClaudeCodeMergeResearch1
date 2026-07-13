@@ -163,11 +163,11 @@ public with sharing class NavatarAcuityCtrl {
             //Modified by Omkar Yamgar W.R.To Bug# 00039803 start 
             respWrapper.acclabel = SObjectType.Account.getLabelPlural();
             respWrapper.conlabel = SObjectType.Contact.getLabelPlural();
-            respWrapper.dellabel = SObjectType.navpeII_Dev2__Pipeline__c.getLabelPlural();
-            respWrapper.fundlabel = SObjectType.navpeII_Dev2__Fund__c.getLabelPlural();
-            respWrapper.themelabel = SObjectType.navpeII_Dev2__Theme__c.getLabelPlural();
-            respWrapper.cliplabel = SObjectType.navpeII_Dev2__Clip__c.getLabelPlural();
-            respWrapper.fnrlabel = SObjectType.navpeII_Dev2__Fundraising__c.getLabelPlural();
+            respWrapper.dellabel = SObjectType.navpeII_Dev14__Pipeline__c.getLabelPlural();
+            respWrapper.fundlabel = SObjectType.navpeII_Dev14__Fund__c.getLabelPlural();
+            respWrapper.themelabel = SObjectType.navpeII_Dev14__Theme__c.getLabelPlural();
+            respWrapper.cliplabel = SObjectType.navpeII_Dev14__Clip__c.getLabelPlural();
+            respWrapper.fnrlabel = SObjectType.navpeII_Dev14__Fundraising__c.getLabelPlural();
             //Modified by Omkar Yamgar W.R.To Bug# 00039803 end
             return respWrapper;
         } catch(Exception e) {
@@ -243,19 +243,19 @@ public with sharing class NavatarAcuityCtrl {
                 fieldStr+=',AccountId,Account.Name';
             }
             //Condition for Fundraising Acuity > Fundraising_Contact__c Section
-            if(String.isNotBlank(refField) && !refField.contains('navpeII_Dev2__Contact__r.Email') && objName.equalsIgnoreCase('navpeII_Dev2__Fundraising_Contact__c')){
-                fieldStr += ', navpeII_Dev2__Contact__r.Email';
+            if(String.isNotBlank(refField) && !refField.contains('navpeII_Dev14__Contact__r.Email') && objName.equalsIgnoreCase('navpeII_Dev14__Fundraising_Contact__c')){
+                fieldStr += ', navpeII_Dev14__Contact__r.Email';
             }
             /* RG : END */
             /* Last Interaction : START */
-            //if(objName.equalsIgnoreCase('Contact') && !fieldStr.contains('navpeII_Dev2__Last_Touch_Point__c')){
-                //fieldStr += ', FORMAT(navpeII_Dev2__Last_Touch_Point__c)';
+            //if(objName.equalsIgnoreCase('Contact') && !fieldStr.contains('navpeII_Dev14__Last_Touch_Point__c')){
+                //fieldStr += ', FORMAT(navpeII_Dev14__Last_Touch_Point__c)';
             //}
             /* else if(objName.equalsIgnoreCase('User') && !fieldStr.contains('Last_Touchpoint__c')){
                 fieldStr += ', FORMAT(Last_Touchpoint__c)';
             }*/
-            if((objName.equalsIgnoreCase('Contact') /*|| objName.equalsIgnoreCase('User')*/) && !fieldStr.contains('navpeII_Dev2__Last_Touchpoint_ID__c')){
-                fieldStr += ', navpeII_Dev2__Last_Touchpoint_ID__c';
+            if((objName.equalsIgnoreCase('Contact') /*|| objName.equalsIgnoreCase('User')*/) && !fieldStr.contains('navpeII_Dev14__Last_Touchpoint_ID__c')){
+                fieldStr += ', navpeII_Dev14__Last_Touchpoint_ID__c';
             }
            String str = 'SELECT Id' + (String.isBlank(fieldStr) ? '' : String.escapeSingleQuotes(fieldStr)) + ' FROM ' + String.escapeSingleQuotes(objName) + String.escapeSingleQuotes(whereClause);
            /* Last Interaction : END */
@@ -333,14 +333,14 @@ public with sharing class NavatarAcuityCtrl {
 
                 if(objApiName.equalsIgnoreCase('Account')){
                     //For handling events
-                    actIdList = fetchRecsToProcess(conIdList, 'Event', ' WHERE (Relation.Type = \'Contact\') AND ((RelationId IN :conIdList) OR (Event.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\'))');
+                    actIdList = fetchRecsToProcess(conIdList, 'Event', ' WHERE (Relation.Type = \'Contact\') AND ((RelationId IN :conIdList) OR (Event.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\'))');
                     processCRActInfo('Event', actIdList, ' WHERE (EventId IN :actIdList)', conIdList, recordId, objApiName, namespacePrefix);
-                    processCRActInfo('Event', '(navpeII_Dev2__Related_Associations__c LIKE \'%' + recordId + '%\')');    //For covering the scenario : Empty Name & Accounts in AA field
+                    processCRActInfo('Event', '(navpeII_Dev14__Related_Associations__c LIKE \'%' + recordId + '%\')');    //For covering the scenario : Empty Name & Accounts in AA field
                     //For handling tasks
                     if(Schema.getGlobalDescribe().get('TaskRelation') != null){
-                        actIdList = fetchRecsToProcess(conIdList, 'Task', ' WHERE (Relation.Type = \'Contact\') AND ((RelationId IN :conIdList) OR (Task.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\'))');//Removed ListEmail filtering By Harshwardhan
+                        actIdList = fetchRecsToProcess(conIdList, 'Task', ' WHERE (Relation.Type = \'Contact\') AND ((RelationId IN :conIdList) OR (Task.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\'))');//Removed ListEmail filtering By Harshwardhan
                         processCRActInfo('Task', actIdList, ' WHERE (TaskId IN :actIdList)', conIdList, recordId, objApiName, namespacePrefix);
-                        processCRActInfo('Task', '(navpeII_Dev2__Related_Associations__c LIKE \'%' + recordId + '%\')');    //For covering the scenario : Empty Name & Accounts in AA field    
+                        processCRActInfo('Task', '(navpeII_Dev14__Related_Associations__c LIKE \'%' + recordId + '%\')');    //For covering the scenario : Empty Name & Accounts in AA field    
                     }
                     objIdVsActIdsMap.remove(recordId);  //To remove current record id from Account
                 } else if(objApiName.equalsIgnoreCase('Contact')){
@@ -355,24 +355,24 @@ public with sharing class NavatarAcuityCtrl {
                     objIdVsActIdsMap.remove(accId);  //To remove current record id from Contact
                 } else if(objApiName.equalsIgnoreCase(namespacePrefix + 'Pipeline__c') || objApiName.equalsIgnoreCase(namespacePrefix + 'Fundraising__c')){
                     //For handling events
-                    actIdList = fetchRecsToProcess('', 'Event', ' WHERE (Relation.Type = \'Contact\') AND (Event.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')');
+                    actIdList = fetchRecsToProcess('', 'Event', ' WHERE (Relation.Type = \'Contact\') AND (Event.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')');
                     processCRActInfo('Event', actIdList, ' WHERE (EventId IN :actIdList)', null, recordId, objApiName, namespacePrefix);
-                    processCRActInfo('Event', '(navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')');    //For covering the scenario : Empty Name & Accounts in AA field
+                    processCRActInfo('Event', '(navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')');    //For covering the scenario : Empty Name & Accounts in AA field
                     //For handling tasks
                     if(Schema.getGlobalDescribe().get('TaskRelation') != null){
-                        actIdList = fetchRecsToProcess('', 'Task', ' WHERE (Relation.Type = \'Contact\') AND (Task.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')');//Removed ListEmail filtering By Harshwardhan
+                        actIdList = fetchRecsToProcess('', 'Task', ' WHERE (Relation.Type = \'Contact\') AND (Task.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')');//Removed ListEmail filtering By Harshwardhan
                         processCRActInfo('Task', actIdList, ' WHERE (TaskId IN :actIdList)', null, recordId, objApiName, namespacePrefix);
-                        processCRActInfo('Task', '(navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')');     //For covering the scenario : Empty Name & Accounts in AA field
+                        processCRActInfo('Task', '(navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')');     //For covering the scenario : Empty Name & Accounts in AA field
                     }
                     if(objApiName.equalsIgnoreCase(namespacePrefix + 'Pipeline__c')){
                         objIdVsActIdsMap.remove(accId);     //To remove the Account associated to the current Deal record
                     }
                 } else if(objApiName.equalsIgnoreCase(namespacePrefix + 'Fund__c')){
-                    String fdrWhereClauseStrEvent = '(Event.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')';
-                    String fdrWhereClauseStrTask = '(Task.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')';
+                    String fdrWhereClauseStrEvent = '(Event.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')';
+                    String fdrWhereClauseStrTask = '(Task.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recordId) + '%\')';
                     for(String fdrRecId : conIdList){
-                        fdrWhereClauseStrEvent += ' OR (Event.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
-                        fdrWhereClauseStrTask += ' OR (Task.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
+                        fdrWhereClauseStrEvent += ' OR (Event.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
+                        fdrWhereClauseStrTask += ' OR (Task.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
                     }
                     //For handling events
                     actIdList = fetchRecsToProcess('', 'Event', ' WHERE (Relation.Type = \'Contact\') AND (' + fdrWhereClauseStrEvent + ')');
@@ -386,7 +386,7 @@ public with sharing class NavatarAcuityCtrl {
                     }
                 }
                 String TOKEN_SOBJECT_NAME = namespacePrefix + 
-                                            (namespacePrefix.equalsIgnoreCase('navpeII_Dev2__')
+                                            (namespacePrefix.equalsIgnoreCase('navpeII_Dev14__')
                                              ? 'Pipeline__c'
                                              : 'Deal__c');
                 processAccAssociatedToDeals(namespacePrefix, TOKEN_SOBJECT_NAME, objIdVsActIdsMap.keySet());
@@ -411,9 +411,9 @@ public with sharing class NavatarAcuityCtrl {
     //private static void processCRActInfo(String objName, List<String> actIdList, String whereClause, List<String> conIdList, String recordId, String objApiName, String namespacePrefix){
     //    try {
     //        String accIdClause = (Schema.getGlobalDescribe().get('EventRelation').getDescribe().fields.getMap().get('AccountId') != null) ? (' AccountId, ') : '';
-    //        for(sObject actRec : Database.query('SELECT ' + accIdClause + ' RelationId, ' + objName + 'Id, ' + objName + '.navpeII_Dev2__Related_Associations__c FROM ' + objName + 'Relation' + whereClause + ' AND IsDeleted = false ALL ROWS')){
+    //        for(sObject actRec : Database.query('SELECT ' + accIdClause + ' RelationId, ' + objName + 'Id, ' + objName + '.navpeII_Dev14__Related_Associations__c FROM ' + objName + 'Relation' + whereClause + ' AND IsDeleted = false ALL ROWS')){
     //            String actId = String.valueOf(actRec.get(objName + 'Id'));
-    //            String relAssoIds = String.valueOf(actRec.getSobject(objName).get('navpeII_Dev2__Related_Associations__c'));
+    //            String relAssoIds = String.valueOf(actRec.getSobject(objName).get('navpeII_Dev14__Related_Associations__c'));
     //            if(String.isNotBlank(relAssoIds)){
     //                processRelObjIds(relAssoIds, actId);
     //            }
@@ -455,11 +455,11 @@ public with sharing class NavatarAcuityCtrl {
         try {
             Integer processedRecCount = 0;
             //Added IsChild = false check on 2022-10-07 to consider only the main copy of the event record
-            System.debug('Query processCRActInfo 1 ==>'+'SELECT Id, navpeII_Dev2__Related_Associations__c FROM ' + objName + ' WHERE ' + relAssoClause + (objName.equalsIgnoreCase('Event') ? ' AND IsChild = false' : '') + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS');
-            for(sObject actRec : Database.query('SELECT Id, navpeII_Dev2__Related_Associations__c FROM ' + objName + ' WHERE ' + relAssoClause + (objName.equalsIgnoreCase('Event') ? ' AND IsChild = false' : '') + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS')){
+            System.debug('Query processCRActInfo 1 ==>'+'SELECT Id, navpeII_Dev14__Related_Associations__c FROM ' + objName + ' WHERE ' + relAssoClause + (objName.equalsIgnoreCase('Event') ? ' AND IsChild = false' : '') + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS');
+            for(sObject actRec : Database.query('SELECT Id, navpeII_Dev14__Related_Associations__c FROM ' + objName + ' WHERE ' + relAssoClause + (objName.equalsIgnoreCase('Event') ? ' AND IsChild = false' : '') + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS')){
                 if(Limits.getCpuTime() < ALLOWED_CPU_TIME){
                     completeActIdsSet.add(String.valueOf(actRec.get('Id')));
-                    processRelObjIds(String.valueOf(actRec.get('navpeII_Dev2__Related_Associations__c')), String.valueOf(actRec.get('Id')));
+                    processRelObjIds(String.valueOf(actRec.get('navpeII_Dev14__Related_Associations__c')), String.valueOf(actRec.get('Id')));
                     processedRecCount++;
                 } else {
                     system.debug('--->' + objName + ' > ' + processedRecCount + ' private records processed in processCRActInfo().');
@@ -476,11 +476,11 @@ public with sharing class NavatarAcuityCtrl {
             String accIdClause = (Schema.getGlobalDescribe().get('EventRelation').getDescribe().fields.getMap().get('AccountId') != null) ? (' AccountId, ') : '';
             String isChildClause = objName.equalsIgnoreCase('Event') ? ' AND IsChild = false' : '';
             Integer processedRecCount = 0;
-            System.debug('Query processCRActInfo 2 ==>'+'SELECT Id, navpeII_Dev2__Related_Associations__c, (SELECT ' + accIdClause + ' RelationId FROM ' + objName + 'Relations WHERE IsDeleted = false) FROM ' + objName + ' WHERE Id IN :actIdList' + isChildClause + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS');
-            for(sObject actRec : Database.query('SELECT Id, navpeII_Dev2__Related_Associations__c, (SELECT ' + accIdClause + ' RelationId FROM ' + objName + 'Relations WHERE IsDeleted = false) FROM ' + objName + ' WHERE Id IN :actIdList' + isChildClause + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS')){
+            System.debug('Query processCRActInfo 2 ==>'+'SELECT Id, navpeII_Dev14__Related_Associations__c, (SELECT ' + accIdClause + ' RelationId FROM ' + objName + 'Relations WHERE IsDeleted = false) FROM ' + objName + ' WHERE Id IN :actIdList' + isChildClause + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS');
+            for(sObject actRec : Database.query('SELECT Id, navpeII_Dev14__Related_Associations__c, (SELECT ' + accIdClause + ' RelationId FROM ' + objName + 'Relations WHERE IsDeleted = false) FROM ' + objName + ' WHERE Id IN :actIdList' + isChildClause + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS')){
                 if(Limits.getCpuTime() < ALLOWED_CPU_TIME){
                     String actId = String.valueOf(actRec.get('Id'));
-                    String relAssoIds = String.valueOf(actRec.get('navpeII_Dev2__Related_Associations__c'));
+                    String relAssoIds = String.valueOf(actRec.get('navpeII_Dev14__Related_Associations__c'));
                     if(String.isNotBlank(relAssoIds)){
                         processRelObjIds(relAssoIds, actId);
                     }
@@ -589,7 +589,7 @@ public with sharing class NavatarAcuityCtrl {
             } else {
                 objIdVsActIdsMap = new Map<String, Set<String>>();
                 String TOKEN_SOBJECT_NAME = String.escapeSingleQuotes(namespacePrefix + 
-                                            (String.escapeSingleQuotes(namespacePrefix).equalsIgnoreCase('navpeII_Dev2__')
+                                            (String.escapeSingleQuotes(namespacePrefix).equalsIgnoreCase('navpeII_Dev14__')
                                              ? 'Pipeline__c'
                                              : 'Deal__c'));
                 if(objApiName.equalsIgnoreCase('Account') || objApiName.equalsIgnoreCase('Contact')){
@@ -598,27 +598,27 @@ public with sharing class NavatarAcuityCtrl {
                         processDRActRelInfo('Task', actIdList, ' WHERE TaskId IN :actIdList');    
                     }
                     //Added below 2 lines on 2022-09-26 to handle private activities
-                    processDRActInfo('Event', actIdList, ' WHERE navpeII_Dev2__Related_Associations__c != null AND Id IN :actIdList');   //For covering the scenario : Empty Name & Accounts in AA field
-                    processDRActInfo('Task', actIdList, ' WHERE navpeII_Dev2__Related_Associations__c != null AND Id IN :actIdList');    //For covering the scenario : Empty Name & Accounts in AA field
+                    processDRActInfo('Event', actIdList, ' WHERE navpeII_Dev14__Related_Associations__c != null AND Id IN :actIdList');   //For covering the scenario : Empty Name & Accounts in AA field
+                    processDRActInfo('Task', actIdList, ' WHERE navpeII_Dev14__Related_Associations__c != null AND Id IN :actIdList');    //For covering the scenario : Empty Name & Accounts in AA field
                 } else if(objApiName.equalsIgnoreCase(TOKEN_SOBJECT_NAME)){
-                    processDRActRelInfo('Event', actIdList, ' WHERE EventId IN :actIdList AND Event.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\'');
+                    processDRActRelInfo('Event', actIdList, ' WHERE EventId IN :actIdList AND Event.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\'');
                     if(Schema.getGlobalDescribe().get('TaskRelation') != null){
-                        processDRActRelInfo('Task', actIdList, ' WHERE TaskId IN :actIdList AND Task.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\'');
+                        processDRActRelInfo('Task', actIdList, ' WHERE TaskId IN :actIdList AND Task.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\'');
                     }
                     //Added below 2 lines on 2022-09-26 to handle private activities
-                    processDRActInfo('Event', actIdList, ' WHERE Id IN :actIdList AND navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\'');   //For covering the scenario : Empty Name & Accounts in AA field
-                    processDRActInfo('Task', actIdList, ' WHERE Id IN :actIdList AND navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\'');    //For covering the scenario : Empty Name & Accounts in AA field
+                    processDRActInfo('Event', actIdList, ' WHERE Id IN :actIdList AND navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\'');   //For covering the scenario : Empty Name & Accounts in AA field
+                    processDRActInfo('Task', actIdList, ' WHERE Id IN :actIdList AND navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\'');    //For covering the scenario : Empty Name & Accounts in AA field
                     objIdVsActIdsMap.remove(recId);  //To remove current record id from Deal
                 } else if(objApiName.equalsIgnoreCase(namespacePrefix + 'Fund__c')){
-                    String fdrWhereClauseStrEventRel = ' WHERE (EventId IN :actIdList) AND ((Event.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\')';
-                    String fdrWhereClauseStrTaskRel = ' WHERE (TaskId IN :actIdList) AND ((Task.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\')';
-                    String fdrWhereClauseStrEvent = ' WHERE (Id IN :actIdList) AND ((navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\')';
-                    String fdrWhereClauseStrTask = ' WHERE (Id IN :actIdList) AND ((navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\')';
+                    String fdrWhereClauseStrEventRel = ' WHERE (EventId IN :actIdList) AND ((Event.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\')';
+                    String fdrWhereClauseStrTaskRel = ' WHERE (TaskId IN :actIdList) AND ((Task.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\')';
+                    String fdrWhereClauseStrEvent = ' WHERE (Id IN :actIdList) AND ((navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\')';
+                    String fdrWhereClauseStrTask = ' WHERE (Id IN :actIdList) AND ((navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(recId) + '%\')';
                     for(String fdrRecId : relObjIdList){
-                        fdrWhereClauseStrEventRel += ' OR (Event.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
-                        fdrWhereClauseStrTaskRel += ' OR (Task.navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
-                        fdrWhereClauseStrEvent += ' OR (navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
-                        fdrWhereClauseStrTask += ' OR (navpeII_Dev2__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
+                        fdrWhereClauseStrEventRel += ' OR (Event.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
+                        fdrWhereClauseStrTaskRel += ' OR (Task.navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
+                        fdrWhereClauseStrEvent += ' OR (navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
+                        fdrWhereClauseStrTask += ' OR (navpeII_Dev14__Related_Associations__c LIKE \'%' + String.escapeSingleQuotes(fdrRecId) + '%\')';
                     }
                     processDRActRelInfo('Event', actIdList, fdrWhereClauseStrEventRel + ')');
                     if(Schema.getGlobalDescribe().get('TaskRelation') != null){
@@ -650,10 +650,10 @@ public with sharing class NavatarAcuityCtrl {
     private static void processDRActRelInfo(String objName, List<String> actIdList, String whereClause){
         try {
             Integer processedRecCount = 0;
-            for(sObject actRec : Database.query('SELECT ' + objName + '.navpeII_Dev2__Related_Associations__c, ' + objName + 'Id FROM ' + objName + 'Relation' + whereClause + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS')){
+            for(sObject actRec : Database.query('SELECT ' + objName + '.navpeII_Dev14__Related_Associations__c, ' + objName + 'Id FROM ' + objName + 'Relation' + whereClause + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS')){
                 if(Limits.getCpuTime() < ALLOWED_CPU_TIME){
                     String actId = String.valueOf(actRec.get(objName + 'Id'));
-                    String relAssoIds = String.valueOf(actRec.getSobject(objName).get('navpeII_Dev2__Related_Associations__c'));
+                    String relAssoIds = String.valueOf(actRec.getSobject(objName).get('navpeII_Dev14__Related_Associations__c'));
                     if(String.isNotBlank(relAssoIds)){
                         processRelObjIds(relAssoIds, actId);
                     }
@@ -678,9 +678,9 @@ public with sharing class NavatarAcuityCtrl {
     private static void processDRActInfo(String objName, List<String> actIdList, String whereClause){
         try {
             Integer processedRecCount = 0;
-            for(sObject actRec : Database.query('SELECT Id, navpeII_Dev2__Related_Associations__c FROM ' + objName + whereClause + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS')){
+            for(sObject actRec : Database.query('SELECT Id, navpeII_Dev14__Related_Associations__c FROM ' + objName + whereClause + ' AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS')){
                 if(Limits.getCpuTime() < ALLOWED_CPU_TIME){
-                    processRelObjIds(String.valueOf(actRec.get('navpeII_Dev2__Related_Associations__c')), String.valueOf(actRec.get('Id')));
+                    processRelObjIds(String.valueOf(actRec.get('navpeII_Dev14__Related_Associations__c')), String.valueOf(actRec.get('Id')));
                     processedRecCount++;
                 } else {
                     system.debug('--->' + objName + ' > ' + processedRecCount + ' private records processed in processDRActInfo().');
@@ -932,16 +932,16 @@ public with sharing class NavatarAcuityCtrl {
                 when 'Contact'{
                     return 2;
                 }
-                when 'navpeII_Dev2__Pipeline__c'{
+                when 'navpeII_Dev14__Pipeline__c'{
                     return 3;
                 }
-                when 'navpeII_Dev2__Fund__c'{
+                when 'navpeII_Dev14__Fund__c'{
                     return 4;
                 }
-                when 'navpeII_Dev2__Fundraising__c'{
+                when 'navpeII_Dev14__Fundraising__c'{
                     return 5;
                 }
-                when 'navpeII_Dev2__Theme__c'{ //Modified by Omkar for Anurag Bug 00039889
+                when 'navpeII_Dev14__Theme__c'{ //Modified by Omkar for Anurag Bug 00039889
                     return 6;
                 }
                 when 'User'{
@@ -1157,8 +1157,8 @@ public with sharing class NavatarAcuityCtrl {
                     if(calledFrom.equalsIgnoreCase('PageLoad')){
                     
                     for(sObject con : conMap.values()){
-                        if(con.getSObject('navpeII_Dev2__Contact__r').get('Id') != null){
-                            setOfCon.add(String.valueOf(con.getSObject('navpeII_Dev2__Contact__r').get('Id')));
+                        if(con.getSObject('navpeII_Dev14__Contact__r').get('Id') != null){
+                            setOfCon.add(String.valueOf(con.getSObject('navpeII_Dev14__Contact__r').get('Id')));
                         }
                     }
                     System.debug('setOfCon '+setOfCon);
@@ -1255,7 +1255,7 @@ public with sharing class NavatarAcuityCtrl {
             //Preparing map of the object ID vs Last Interaction Info
             String LAST_TOUCHPOINT_REF_FIELD = objName.equalsIgnoreCase('User')
                                                ? 'Last_Touchpoint__c'
-                                               : 'navpeII_Dev2__Last_Touch_Point__c';
+                                               : 'navpeII_Dev14__Last_Touch_Point__c';
             for(String recId : conMap.keySet()){
                 String lastInteractionDate = String.valueOf(conMap.get(recId).get(LAST_TOUCHPOINT_REF_FIELD));
                 String lastInteractionNote = actIdVsNoteMap.get(String.valueOf(conMap.get(recId).get('Last_Touchpoint_ID__c')));
@@ -1477,7 +1477,7 @@ public with sharing class NavatarAcuityCtrl {
     //Shivam added RG related Changes defect #00038728
     private static void getWrapperContactDealInformation(String recordId, String namespacePrefix, Set<String> conIdSet,String calledFrom){
         try {
-            if(Schema.sObjectType.navpeII_Dev2__Pipeline__c.isAccessible()){    
+            if(Schema.sObjectType.navpeII_Dev14__Pipeline__c.isAccessible()){    
                 if(String.isNotBlank(recordId)){
                     getWrapperContactUserDealCount(String.escapeSingleQuotes(recordId), namespacePrefix, calledFrom);
                 } else if(String.isBlank(recordId) && (String.isBlank(calledFrom) || (String.isNotBlank(calledFrom) && calledFrom.equalsIgnoreCase('pageLoad')))) {
@@ -2704,7 +2704,7 @@ public with sharing class NavatarAcuityCtrl {
                 List<String> nonSfConEmails = new List<String>();
                 String refField1 = String.valueOf(Acuity_Setting__mdt.getInstance(metadataField1).Value__c);
                 String refField2 = String.valueOf(Acuity_Setting__mdt.getInstance(metadataField2).Value__c);
-            Map<String, sObject> conMap = new Map<String, sObject>(Database.query('SELECT Id, AccountId, Account.Name, Email, ' + string.escapeSingleQuotes(refField1) + ', ' + string.escapeSingleQuotes(refField2) + ', FORMAT(navpeII_Dev2__Last_Touch_Point__c), Last_Touchpoint_ID__c FROM Contact WHERE Email IN :conEmails LIMIT 50000'));//fixed security issue shivam
+            Map<String, sObject> conMap = new Map<String, sObject>(Database.query('SELECT Id, AccountId, Account.Name, Email, ' + string.escapeSingleQuotes(refField1) + ', ' + string.escapeSingleQuotes(refField2) + ', FORMAT(navpeII_Dev14__Last_Touch_Point__c), Last_Touchpoint_ID__c FROM Contact WHERE Email IN :conEmails LIMIT 50000'));//fixed security issue shivam
                 Map<String,sObject> emailVsCon = new Map<String,sObject>(); 
                 for(sObject s : conMap.values()){
                     emailVsCon.put(String.valueof(s.get('Email')),s);                
@@ -3011,12 +3011,12 @@ public with sharing class NavatarAcuityCtrl {
                                 ? ' Where Id IN :actIdList AND IsDeleted = false ORDER BY CreatedDate DESC ALL ROWS' //Removed AND By Harshwardhan
                                 : lmtRec;//Modified by Parshuram/omkar Nerella W.R.To Bug# 00039942/00039993 && Bug Fix By Manonit -45446
             //objApiNameSet.remove('Themes');
-            objApiNameSet.remove('navpeII_Dev2__Themes'); //Modified by Anshika Ahuja to load All Interactions page
+            objApiNameSet.remove('navpeII_Dev14__Themes'); //Modified by Anshika Ahuja to load All Interactions page
             Set<String> activityIdSet = new Set<String>();
             //For processing the data of related associations field
-            system.debug('@@'+'SELECT Id, OwnerId, navpeII_Dev2__Related_Associations__c FROM ' + objName + limitClause);
-            for(sObject actRec : Database.query('SELECT Id, OwnerId, navpeII_Dev2__Related_Associations__c FROM ' + objName + limitClause)){//Removed ' WHERE (' + objName + '.' + objName + 'SubType != \'ListEmail\')'  by Harshwardhan
-                String relAssoIdsStr = String.valueOf(actRec.get('navpeII_Dev2__Related_Associations__c'));
+            system.debug('@@'+'SELECT Id, OwnerId, navpeII_Dev14__Related_Associations__c FROM ' + objName + limitClause);
+            for(sObject actRec : Database.query('SELECT Id, OwnerId, navpeII_Dev14__Related_Associations__c FROM ' + objName + limitClause)){//Removed ' WHERE (' + objName + '.' + objName + 'SubType != \'ListEmail\')'  by Harshwardhan
+                String relAssoIdsStr = String.valueOf(actRec.get('navpeII_Dev14__Related_Associations__c'));
                 if(String.isNotBlank(relAssoIdsStr)){
                     relAssoIdSet.addAll(relAssoIdsStr.split(','));
                 }
@@ -3051,8 +3051,8 @@ public with sharing class NavatarAcuityCtrl {
             for(String objApiName : objApiNameSet){
                 objRecMap.putAll(fetchRecsInfo(objApiName, relAssoIdSet));
             }
-            String taskOtherField='FORMAT(ActivityDate), Status, Priority, navpeII_Dev2__Classification__c';
-            String eventOtherField='FORMAT(ActivityDate), FORMAT(ActivityDateTime), FORMAT(EndDateTime), IsAllDayEvent, navpeII_Dev2__Classification__c';
+            String taskOtherField='FORMAT(ActivityDate), Status, Priority, navpeII_Dev14__Classification__c';
+            String eventOtherField='FORMAT(ActivityDate), FORMAT(ActivityDateTime), FORMAT(EndDateTime), IsAllDayEvent, navpeII_Dev14__Classification__c';
             
             // added by sudhanshu to add custom task layout field in Query
             if(String.isNotBlank(taskLayoutFields))
@@ -3062,7 +3062,7 @@ public with sharing class NavatarAcuityCtrl {
                     // bug 00046268,46460 fixed by Sudhanshu on 23-07-2024
                     Schema.SObjectField field = taskSchema.get(fieldName);
                     String fieldType = String.valueOf(field.getDescribe().getType());
-                    if(fieldName != 'navpeII_Dev2__Classification__c')
+                    if(fieldName != 'navpeII_Dev14__Classification__c')
                     {
                         if(fieldType == 'DATE' || fieldType == 'DATETIME' )
                         {
@@ -3087,7 +3087,7 @@ public with sharing class NavatarAcuityCtrl {
                     // bug 00046268,46460 fixed by Sudhanshu on 23-07-2024
                     Schema.SObjectField field = eventSchema.get(fieldName);
                     String fieldType = String.valueOf(field.getDescribe().getType());
-                    if(fieldName != 'navpeII_Dev2__Classification__c')
+                    if(fieldName != 'navpeII_Dev14__Classification__c')
                     {
                         if(fieldType == 'DATE' || fieldType == 'DATETIME' )
                         {
@@ -3115,9 +3115,9 @@ public with sharing class NavatarAcuityCtrl {
                         : ((objName.equalsIgnoreCase('Event') ? ' WHERE IsChild = false' : '') + lmtRec);// Reverted back the Order by Clause for bug id 00041938
             
             Integer processedRecCount = 0;
-            system.debug('->SELECT Id, OwnerId, Owner.Name, Subject, Description, navpeII_Dev2__Related_Associations__c, ' + objName + 'SubType, ' + otherFieldStr + ', (SELECT RelationId, Relation.Name FROM ' + objName + 'Relations ' + whereClause + ') FROM ' + objName + limitClause);
+            system.debug('->SELECT Id, OwnerId, Owner.Name, Subject, Description, navpeII_Dev14__Related_Associations__c, ' + objName + 'SubType, ' + otherFieldStr + ', (SELECT RelationId, Relation.Name FROM ' + objName + 'Relations ' + whereClause + ') FROM ' + objName + limitClause);
             // Bug 	00047898 fixed by Sudhanshu on 03-08-2025
-            for(sObject objRec : Database.query('SELECT Id, OwnerId, Owner.Name,IsArchived, Subject, Description, navpeII_Dev2__Related_Associations__c, ' + objName + 'SubType, ' + otherFieldStr + ', (SELECT RelationId, Relation.Name FROM ' + objName + 'Relations ' + whereClause + ') FROM ' + objName + limitClause)){
+            for(sObject objRec : Database.query('SELECT Id, OwnerId, Owner.Name,IsArchived, Subject, Description, navpeII_Dev14__Related_Associations__c, ' + objName + 'SubType, ' + otherFieldStr + ', (SELECT RelationId, Relation.Name FROM ' + objName + 'Relations ' + whereClause + ') FROM ' + objName + limitClause)){
                 if(Limits.getCpuTime() < ALLOWED_CPU_TIME){
                     actWrapper.add(createActWrapper(objRec, objName, objApiNameVsIconNameMap, objRecMap));
                     processedRecCount++;
@@ -3152,13 +3152,13 @@ public with sharing class NavatarAcuityCtrl {
             String Notes_Popup_FollowUp_Task_Fields='';
             String AD_Switcher='';
             try{
-                strQuery = 'SELECT Id, navpeII_Dev2__AD_Switcher__c, navpeII_Dev2__RAS__c, navpeII_Dev2__Notes_Popup_Event_Fields__c, navpeII_Dev2__Notes_Popup_Task_Fields__c, navpeII_Dev2__Notes_Popup_FollowUp_Task_Fields__c FROM navpeII_Dev2__Navatar_Setup__c Where navpeII_Dev2__Admin_Setting__c = true AND navpeII_Dev2__RAS__c != Null';
+                strQuery = 'SELECT Id, navpeII_Dev14__AD_Switcher__c, navpeII_Dev14__RAS__c, navpeII_Dev14__Notes_Popup_Event_Fields__c, navpeII_Dev14__Notes_Popup_Task_Fields__c, navpeII_Dev14__Notes_Popup_FollowUp_Task_Fields__c FROM navpeII_Dev14__Navatar_Setup__c Where navpeII_Dev14__Admin_Setting__c = true AND navpeII_Dev14__RAS__c != Null';
                 lst = Database.query(string.escapesinglequotes(strQuery));
-                RAS = RAS + String.valueOf(lst[0].get('navpeII_Dev2__RAS__c'));
-                Notes_Popup_Task_Fields=(String)lst[0].get('navpeII_Dev2__Notes_Popup_Task_Fields__c');
-                Notes_Popup_Event_Fields=(String)lst[0].get('navpeII_Dev2__Notes_Popup_Event_Fields__c');
-                Notes_Popup_FollowUp_Task_Fields=(String)lst[0].get('navpeII_Dev2__Notes_Popup_FollowUp_Task_Fields__c');
-                AD_Switcher=String.valueOf(lst[0].get('navpeII_Dev2__AD_Switcher__c'));
+                RAS = RAS + String.valueOf(lst[0].get('navpeII_Dev14__RAS__c'));
+                Notes_Popup_Task_Fields=(String)lst[0].get('navpeII_Dev14__Notes_Popup_Task_Fields__c');
+                Notes_Popup_Event_Fields=(String)lst[0].get('navpeII_Dev14__Notes_Popup_Event_Fields__c');
+                Notes_Popup_FollowUp_Task_Fields=(String)lst[0].get('navpeII_Dev14__Notes_Popup_FollowUp_Task_Fields__c');
+                AD_Switcher=String.valueOf(lst[0].get('navpeII_Dev14__AD_Switcher__c'));
             }
             catch(exception ex){
                 strQuery = 'SELECT Id, AD_Switcher__c, RAS__c, Notes_Popup_Event_Fields__c, Notes_Popup_Task_Fields__c, Notes_Popup_FollowUp_Task_Fields__c FROM Navatar_Setup__c Where Admin_Setting__c = true AND RAS__c != Null';
@@ -3175,13 +3175,13 @@ public with sharing class NavatarAcuityCtrl {
             String uNotes_Popup_FollowUp_Task_Fields='';
         
             for(String str:checkUpdateableFields(Schema.getGlobalDescribe().get('Task'),Notes_Popup_Task_Fields.split(',') ) ){
-                if(String.isNotBlank(str) && str != 'ActivityDate' && str != 'Status' && str != 'Priority'  && str !='OwnerId'  && str !='navpeII_Dev2__Classification__c')
+                if(String.isNotBlank(str) && str != 'ActivityDate' && str != 'Status' && str != 'Priority'  && str !='OwnerId'  && str !='navpeII_Dev14__Classification__c')
                 uNotes_Popup_Task_Fields+=str+',';
             }
 			uNotes_Popup_Task_Fields=uNotes_Popup_Task_Fields.removeEnd(',');  //FIx for FLS issues
             for(String str:checkUpdateableFields(Schema.getGlobalDescribe().get('Event'),Notes_Popup_Event_Fields.split(',') ) ){
                 // Bug 00044438 Fixed on 02-04-2024 by Sudhanshu
-                if(String.isNotBlank(str) && str!= 'ActivityDate' && str!= 'ActivityDateTime' && str!= 'EndDateTime' && str!= 'StartDateTime'  && str!= 'IsAllDayEvent'  && str !='OwnerId' && str !='navpeII_Dev2__Classification__c')
+                if(String.isNotBlank(str) && str!= 'ActivityDate' && str!= 'ActivityDateTime' && str!= 'EndDateTime' && str!= 'StartDateTime'  && str!= 'IsAllDayEvent'  && str !='OwnerId' && str !='navpeII_Dev14__Classification__c')
                 uNotes_Popup_Event_Fields+=str+',';
             }
 			uNotes_Popup_Event_Fields=uNotes_Popup_Event_Fields.removeEnd(',');  //FIx for FLS issues
@@ -3224,7 +3224,7 @@ public with sharing class NavatarAcuityCtrl {
             //Added below 2 lines on 2022-10-26 to fetch tagged objects & their icon's info
             Set<String> taggedObjApiNameSet = fetchTaggedObjApiNameSet(namespacePrefix);
             Map<String, String> objApiNameVsIconNameMap = fetchIconInfo(taggedObjApiNameSet);
-            taggedObjApiNameSet.remove('navpeII_Dev2__Themes');
+            taggedObjApiNameSet.remove('navpeII_Dev14__Themes');
             List<ActivityWrapper> actWrapper = new List<ActivityWrapper>();
             Set<String> actIdSet = new Set<String>();
             Set<String> participantIdSet = new Set<String>();
@@ -3244,9 +3244,9 @@ public with sharing class NavatarAcuityCtrl {
                     participantIdSet.add(String.valueOf(actRec.get('RelationId')));
                     actIdSet.add(String.valueOf(actRec.get(actObjName + 'Id')));
                 }
-                //Checking all Activities with navpeII_Dev2__Related_Associations__c and creating related record vs Activity ID map
-                for(sObject actRec : Database.query('SELECT Id, navpeII_Dev2__Related_Associations__c FROM ' + actObjName + ' WHERE navpeII_Dev2__Related_Associations__c != null')){
-                    relRecIdVsActIdSetMap.putAll(processRelObjVsActIds(relRecIdVsActIdSetMap, String.valueOf(actRec.get('Id')), String.valueOf(actRec.get('navpeII_Dev2__Related_Associations__c'))));
+                //Checking all Activities with navpeII_Dev14__Related_Associations__c and creating related record vs Activity ID map
+                for(sObject actRec : Database.query('SELECT Id, navpeII_Dev14__Related_Associations__c FROM ' + actObjName + ' WHERE navpeII_Dev14__Related_Associations__c != null')){
+                    relRecIdVsActIdSetMap.putAll(processRelObjVsActIds(relRecIdVsActIdSetMap, String.valueOf(actRec.get('Id')), String.valueOf(actRec.get('navpeII_Dev14__Related_Associations__c'))));
                 }
             }
             //Creating map of matching activity IDs and their names
@@ -3270,7 +3270,7 @@ public with sharing class NavatarAcuityCtrl {
                 }
             }
 
-            //For processing navpeII_Dev2__Related_Associations__c data
+            //For processing navpeII_Dev14__Related_Associations__c data
             for(String recKey : relObjIdVsNameMap.keySet()){
                 if(relRecIdVsActIdSetMap.containsKey(recKey)){
                     actIdSet.addAll(relRecIdVsActIdSetMap.get(recKey));
@@ -3282,11 +3282,11 @@ public with sharing class NavatarAcuityCtrl {
             Search.SearchResults searchResult ;
             if(Schema.sObjectType.Event.fields.Description.isAccessible())
             {
-               searchResult = Search.find('FIND {' + searchTerm + '} IN ALL FIELDS RETURNING Task(Subject, Description, FORMAT(ActivityDate), navpeII_Dev2__Related_Associations__c), Event(Subject, Description, FORMAT(ActivityDateTime), navpeII_Dev2__Related_Associations__c, IsChild)', AccessLevel.USER_MODE);
+               searchResult = Search.find('FIND {' + searchTerm + '} IN ALL FIELDS RETURNING Task(Subject, Description, FORMAT(ActivityDate), navpeII_Dev14__Related_Associations__c), Event(Subject, Description, FORMAT(ActivityDateTime), navpeII_Dev14__Related_Associations__c, IsChild)', AccessLevel.USER_MODE);
             }
             else
             {
-               searchResult = Search.find('FIND {' + searchTerm + '} IN ALL FIELDS RETURNING Task(Subject, FORMAT(ActivityDate), navpeII_Dev2__Related_Associations__c), Event(Subject, FORMAT(ActivityDateTime), navpeII_Dev2__Related_Associations__c, IsChild)', AccessLevel.USER_MODE);
+               searchResult = Search.find('FIND {' + searchTerm + '} IN ALL FIELDS RETURNING Task(Subject, FORMAT(ActivityDate), navpeII_Dev14__Related_Associations__c), Event(Subject, FORMAT(ActivityDateTime), navpeII_Dev14__Related_Associations__c, IsChild)', AccessLevel.USER_MODE);
             }
             //End --> Modified by Parshuram Nerella W.R.To Bug# 00039567
             for(Search.SearchResult objSearchRes : searchResult.get('Task')){
@@ -3302,8 +3302,8 @@ public with sharing class NavatarAcuityCtrl {
                 Set<String> associatedUsersIdSet = new Set<String>();
                 Set<String> associatedConIdSet = new Set<String>();
                 //Task
-                for(sObject actRec : Database.query('SELECT OwnerId, navpeII_Dev2__Related_Associations__c, (SELECT RelationId FROM TaskRelations) FROM Task WHERE Id IN :actIdSet')){
-                    String relAssoIdsStr = String.valueOf(actRec.get('navpeII_Dev2__Related_Associations__c'));
+                for(sObject actRec : Database.query('SELECT OwnerId, navpeII_Dev14__Related_Associations__c, (SELECT RelationId FROM TaskRelations) FROM Task WHERE Id IN :actIdSet')){
+                    String relAssoIdsStr = String.valueOf(actRec.get('navpeII_Dev14__Related_Associations__c'));
                     if(String.isNotBlank(relAssoIdsStr)){
                         relAssoIdSet.addAll(relAssoIdsStr.split(','));
                     }
@@ -3318,8 +3318,8 @@ public with sharing class NavatarAcuityCtrl {
                     associatedUsersIdSet.add(String.valueOf(actRec.get('OwnerId')));
                 }
                 //Event
-                for(sObject actRec : Database.query('SELECT OwnerId, navpeII_Dev2__Related_Associations__c, (SELECT RelationId FROM EventRelations) FROM Event WHERE Id IN :actIdSet')){
-                    String relAssoIdsStr = String.valueOf(actRec.get('navpeII_Dev2__Related_Associations__c'));
+                for(sObject actRec : Database.query('SELECT OwnerId, navpeII_Dev14__Related_Associations__c, (SELECT RelationId FROM EventRelations) FROM Event WHERE Id IN :actIdSet')){
+                    String relAssoIdsStr = String.valueOf(actRec.get('navpeII_Dev14__Related_Associations__c'));
                     if(String.isNotBlank(relAssoIdsStr)){
                         relAssoIdSet.addAll(relAssoIdsStr.split(','));
                     }
@@ -3344,10 +3344,10 @@ public with sharing class NavatarAcuityCtrl {
                 String limitClause =  actIdSet.size() > 0
                                     ? ' WHERE Id IN :actIdSet'
                                     : ' LIMIT 5000';//Modified by Parshuram Nerella W.R.To Bug# 00039942
-                for(sObject objRec : Database.query('SELECT Id, OwnerId, Owner.Name, Subject, Description, navpeII_Dev2__Classification__c, navpeII_Dev2__Related_Associations__c, TaskSubType, FORMAT(ActivityDate), Status, Priority, (SELECT RelationId, Relation.Name FROM TaskRelations WHERE (Relation.Type = \'Contact\' OR Relation.Type = \'User\')) FROM Task' + limitClause)){
+                for(sObject objRec : Database.query('SELECT Id, OwnerId, Owner.Name, Subject, Description, navpeII_Dev14__Classification__c, navpeII_Dev14__Related_Associations__c, TaskSubType, FORMAT(ActivityDate), Status, Priority, (SELECT RelationId, Relation.Name FROM TaskRelations WHERE (Relation.Type = \'Contact\' OR Relation.Type = \'User\')) FROM Task' + limitClause)){
                     actWrapper.add(createActWrapper(objRec, 'Task', objApiNameVsIconNameMap, objRecMap));
                 }
-                for(sObject objRec : Database.query('SELECT Id, OwnerId, Owner.Name, Subject, Description, navpeII_Dev2__Classification__c, navpeII_Dev2__Related_Associations__c, EventSubType, FORMAT(ActivityDate), FORMAT(ActivityDateTime), FORMAT(EndDateTime), IsAllDayEvent, (SELECT RelationId, Relation.Name FROM EventRelations WHERE (Relation.Type = \'Contact\')) FROM Event' + limitClause)){
+                for(sObject objRec : Database.query('SELECT Id, OwnerId, Owner.Name, Subject, Description, navpeII_Dev14__Classification__c, navpeII_Dev14__Related_Associations__c, EventSubType, FORMAT(ActivityDate), FORMAT(ActivityDateTime), FORMAT(EndDateTime), IsAllDayEvent, (SELECT RelationId, Relation.Name FROM EventRelations WHERE (Relation.Type = \'Contact\')) FROM Event' + limitClause)){
                     actWrapper.add(createActWrapper(objRec, 'Event', objApiNameVsIconNameMap, objRecMap));
                 }
             }
@@ -3382,7 +3382,7 @@ public with sharing class NavatarAcuityCtrl {
                                 String.valueOf(objRec.get('Subject'))
                                 : '[No subject]';
             actWrap.detail = String.valueOf(objRec.get('Description'));
-            actWrap.classification = String.valueOf(objRec.get('navpeII_Dev2__Classification__c'));
+            actWrap.classification = String.valueOf(objRec.get('navpeII_Dev14__Classification__c'));
             actWrap.actOwner = String.valueOf(objRec.getSObject('Owner').get('Name'));
             actWrap.iconName = fetchIconName(String.valueOf(objRec.get(actObjName + 'SubType')));
             actWrap.priority = actObjName.equalsIgnoreCase('Task')
@@ -3415,8 +3415,8 @@ public with sharing class NavatarAcuityCtrl {
                                         ? 'Add Note'
                                         : 'Edit Note';
             }
-            if(String.isNotBlank(String.valueOf(objRec.get('navpeII_Dev2__Related_Associations__c')))){
-                for(String taggedRecId : String.valueOf(objRec.get('navpeII_Dev2__Related_Associations__c')).split(',')){
+            if(String.isNotBlank(String.valueOf(objRec.get('navpeII_Dev14__Related_Associations__c')))){
+                for(String taggedRecId : String.valueOf(objRec.get('navpeII_Dev14__Related_Associations__c')).split(',')){
                     ReferenceWrapper refWrap = new ReferenceWrapper();
                     String recObjName = String.valueOf(Id.valueOf(taggedRecId).getsobjecttype());
                     refWrap.name = objRecMap.get(taggedRecId);
@@ -3574,7 +3574,7 @@ public with sharing class NavatarAcuityCtrl {
      */
     private static Map<String, String> fetchIconInfo(Set<String> objApiNameSet){
         try {
-            objApiNameSet.addAll(new Set<String>{'Contact', 'navpeII_Dev2__Themes'});
+            objApiNameSet.addAll(new Set<String>{'Contact', 'navpeII_Dev14__Themes'});
             Map<String, String> objApiNameVsIconNameMap = new Map<String, String>();
             List<JsonResponse> layoutInfo = (list<JsonResponse>)System.JSON.deserialize(fetchEndpointResponse('/services/data/v55.0/tabs'), List<JsonResponse>.class);
             for(String objApiName : objApiNameSet){
@@ -3654,14 +3654,14 @@ public with sharing class NavatarAcuityCtrl {
                         switch on acuitySetting.DeveloperName{
                             when 'Acuity_Firm_Deal_RecordType1', 'Acuity_Firm_Deal_RecordType2', 'Acuity_Firm_Deal_RecordType4', 'Acuity_Firm_Deal_RecordType5', 'Acuity_Firm_Deal_RecordType6'{
                                 dealWrapper.displayToggle = false;
-                                dealWrapper.title = SObjectType.navpeII_Dev2__Pipeline__c.getLabelPlural();
+                                dealWrapper.title = SObjectType.navpeII_Dev14__Pipeline__c.getLabelPlural();
                                 dealWrapper.sortByField = namespacePrefix + 'Log_In_Date__c';
                                 objToQuery = namespacePrefix + 'Pipeline__c';
                                 metadataIdentifier = 'Acuity_Firm_Contact_Deal';
                             }
                             when 'Acuity_Firm_Deal_RecordType3'{
                                 dealWrapper.displayToggle = true;
-                                dealWrapper.title = SObjectType.navpeII_Dev2__Fundraising__c.getLabelPlural();
+                                dealWrapper.title = SObjectType.navpeII_Dev14__Fundraising__c.getLabelPlural();
                                 dealWrapper.sortByField = namespacePrefix + 'Stage__c';
                                 objToQuery = String.escapeSingleQuotes(namespacePrefix) + 'Fundraising__c';
                                 metadataIdentifier = 'Acuity_Firm_FDR';
@@ -3709,7 +3709,7 @@ public with sharing class NavatarAcuityCtrl {
                 dealWrapper.displaySorting = true;
 
                 if(isDealAccessible){
-                    dealWrapper.title = SObjectType.navpeII_Dev2__Pipeline__c.getLabelPlural();
+                    dealWrapper.title = SObjectType.navpeII_Dev14__Pipeline__c.getLabelPlural();
                     dealWrapper.displayToggle = false;
                     dealWrapper.sortByField = namespacePrefix + 'Log_In_Date__c';
                     objToQuery = namespacePrefix + 'Pipeline__c';
@@ -3722,7 +3722,7 @@ public with sharing class NavatarAcuityCtrl {
                     }
                     whereClause = ' WHERE ' + logicField + '=: recordId OR Id IN :dealIdSet';
                 } else if(!isDealAccessible && displayFdrSection) {
-                    dealWrapper.title = SObjectType.navpeII_Dev2__Fundraising__c.getLabelPlural();
+                    dealWrapper.title = SObjectType.navpeII_Dev14__Fundraising__c.getLabelPlural();
                     dealWrapper.displayToggle = true;
                     dealWrapper.sortByField = namespacePrefix + 'Stage__c';
                     objToQuery = String.escapeSingleQuotes(namespacePrefix) + 'Fundraising__c';
@@ -3807,7 +3807,7 @@ public with sharing class NavatarAcuityCtrl {
                 }
                 
                 List<DealsInfoWrapper> dealsDataList = new List<DealsInfoWrapper>();
-                Boolean isObjectAccess = objToQuery.contains('Fundraising__c') ? Schema.sObjectType.navpeII_Dev2__Fundraising__c.isAccessible() : Schema.sObjectType.navpeII_Dev2__Pipeline__c.isAccessible();
+                Boolean isObjectAccess = objToQuery.contains('Fundraising__c') ? Schema.sObjectType.navpeII_Dev14__Fundraising__c.isAccessible() : Schema.sObjectType.navpeII_Dev14__Pipeline__c.isAccessible();
                 if(isObjectAccess) {
                     for(sObject objRec : Database.query(query)){
                         DealsInfoWrapper dealInfoWrap = new DealsInfoWrapper();
@@ -3938,7 +3938,7 @@ public with sharing class NavatarAcuityCtrl {
                 conWrapper.emailCount = emailVsCount.containsKey(conEmail)
                                         ? emailVsCount.get(conEmail)
                                         : 0;
-                conWrapper.mailboxId = String.valueOf(userIdVsMBid.get(String.valueOf(conMap.get(conId).get('navpeII_Dev2__Contact__c'))));
+                conWrapper.mailboxId = String.valueOf(userIdVsMBid.get(String.valueOf(conMap.get(conId).get('navpeII_Dev14__Contact__c'))));
                 /* RG : END */
                 conWrapper.totalActCount = conWrapper.meetingCallCount + conWrapper.dealCount + conWrapper.emailCount;
                 conInfo.add(conWrapper);
@@ -3985,7 +3985,7 @@ public with sharing class NavatarAcuityCtrl {
             if(!frcIdsList.isEmpty()){
                 query += ' where id IN: frcIdsList WITH SECURITY_ENFORCED';
             }
-            List<navpeII_Dev2__Fundraising_Contact__c> lstRecords = new List<navpeII_Dev2__Fundraising_Contact__c>(); //Modified by Anshika Ahuja W.R.To Bug # 00034869
+            List<navpeII_Dev14__Fundraising_Contact__c> lstRecords = new List<navpeII_Dev14__Fundraising_Contact__c>(); //Modified by Anshika Ahuja W.R.To Bug # 00034869
             if(String.isNotBlank(query)) {
                 lstRecords = Database.query(query);  
             }
@@ -3993,7 +3993,7 @@ public with sharing class NavatarAcuityCtrl {
             for(SObject dealTeam : lstRecords){
                 fundraisingContactNames = string.valueOf(dealTeam.get('Name'));
             } 
-            if (navpeII_Dev2__Fundraising_Contact__c.sObjectType.getDescribe().isDeletable()) {  //Modified by Anshika Ahuja W.R.To Bug # 00034869
+            if (navpeII_Dev14__Fundraising_Contact__c.sObjectType.getDescribe().isDeletable()) {  //Modified by Anshika Ahuja W.R.To Bug # 00034869
                 if(!Test.isRunningTest()){
                 	delete lstRecords;    
                 }
@@ -4070,7 +4070,7 @@ public with sharing class NavatarAcuityCtrl {
                 respWrapper.conSecDynFieldHeader3 = fetchFieldLabel(objectName, refField4) +';' + refField4 + ';' + String.valueOf(fieldType);
             }
             List<DealTeamWrapper> dealWrapperList = prepareDealFinalMap(refField1, refField2, refField3, refField4, namespacePrefix,dealMap);
-            respWrapper.title = SObjectType.navpeII_Dev2__Pipeline__c.getLabelPlural();
+            respWrapper.title = SObjectType.navpeII_Dev14__Pipeline__c.getLabelPlural();
             respWrapper.dealInfoWrapper = dealWrapperList;
             return respWrapper;
         } catch (Exception e) {
@@ -4254,7 +4254,7 @@ public with sharing class NavatarAcuityCtrl {
                 //Just in case criteria field not specified then it will return all records
                 query += ' where id IN: idsToDelete LIMIT 10000';
             }
-            List<navpeII_Dev2__Deal_Team__c> lstRecords = new List<navpeII_Dev2__Deal_Team__c>(); //Modified by Anshika Ahuja W.R.To Bug # 00034869       
+            List<navpeII_Dev14__Deal_Team__c> lstRecords = new List<navpeII_Dev14__Deal_Team__c>(); //Modified by Anshika Ahuja W.R.To Bug # 00034869       
             if(String.isNotBlank(query)) {
                 lstRecords = Database.query(query);  
             }
@@ -4262,7 +4262,7 @@ public with sharing class NavatarAcuityCtrl {
             for(SObject dealTeam : lstRecords){
                 dealTeamName = string.valueOf(dealTeam.get('Name'));
             } 
-            If(!lstRecords.isEmpty() && navpeII_Dev2__Deal_Team__c.sObjectType.getDescribe().isDeletable()) {  //Modified by Anshika Ahuja W.R.To Bug # 00034869   
+            If(!lstRecords.isEmpty() && navpeII_Dev14__Deal_Team__c.sObjectType.getDescribe().isDeletable()) {  //Modified by Anshika Ahuja W.R.To Bug # 00034869   
                 delete lstRecords;
             }
             return dealTeamName;
@@ -4751,7 +4751,7 @@ if(String.isNotBlank(refField7)){
             if(String.isNotBlank(query)) {
                 lstRecords = Database.query(query);  
             }
-            If(!lstRecords.isEmpty() && Schema.sObjectType.navpeII_Dev2__Fundraising__c.isDeletable()){
+            If(!lstRecords.isEmpty() && Schema.sObjectType.navpeII_Dev14__Fundraising__c.isDeletable()){
                 delete lstRecords;
             }
         } catch (Exception e) {
